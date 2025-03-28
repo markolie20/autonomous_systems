@@ -32,16 +32,14 @@ class Card:
             dist = (dx**2 + dy**2)**0.5 # Calculate remaining distance
 
             # --- Stopping Condition 1: Check if already very close ---
-            # Use a small threshold instead of checking for exact zero distance
             CLOSE_ENOUGH_THRESHOLD = 100 # pixels (adjust if needed)
             if dist < CLOSE_ENOUGH_THRESHOLD:
                 self.position = list(self.end_pos) # Snap to exact final position
                 self.is_moving = False
-                return # Stop processing for this card this frame
+                return 
 
             # --- Calculate Movement Step ---
             move_speed = CARD_ANIMATION_SPEED
-            # Avoid division by zero if dist happens to be exactly 0 (though threshold should catch it)
             if dist == 0:
                  self.position = list(self.end_pos)
                  self.is_moving = False
@@ -51,7 +49,6 @@ class Card:
             step_y = (dy / dist) * move_speed
 
             # --- Stopping Condition 2: Check if the step would overshoot ---
-            # If the calculated step is larger than the remaining distance, just move to the target
             if abs(step_x) >= abs(dx) and abs(step_y) >= abs(dy):
                  # print(f"DEBUG: Card {self.card_value} {self.suit} stopped - Overshot/Arrived") # Optional debug
                  self.position = list(self.end_pos)
@@ -60,7 +57,6 @@ class Card:
                  # --- Update position normally ---
                  self.position[0] += step_x
                  self.position[1] += step_y
-                 # Safety check: If somehow landed exactly on target after move
                  if self.position[0] == target_x and self.position[1] == target_y:
                       self.is_moving = False
 

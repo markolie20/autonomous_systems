@@ -6,7 +6,6 @@ from utils import load_card_images
 def game_loop():
     """Main game loop for the Pygame Blackjack game."""
     pygame.init()
-    # It's crucial to initialize font module if using fonts anywhere
     pygame.font.init()
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -23,7 +22,7 @@ def game_loop():
         print("Please ensure Pygame is installed correctly and asset paths are correct.")
         print("Check 'constants.py' for BASE_DIR, DATA_FOLDER, CARDS_FOLDER.")
         pygame.quit() # Clean up pygame
-        return # Exit if assets are missing
+        return 
 
     # --- Create Game Environment ---
     # Pass the loaded assets to the constructor
@@ -102,7 +101,7 @@ def game_loop():
 
              elif game.game_state == "DEALER_TURN":
                  # Dealer logic might involve pauses, so pass screen for updates
-                 game.dealer_play(screen) # dealer_play now handles resolve_round
+                 game.dealer_play(screen)
 
              elif game.game_state == "ROUND_OVER":
                  current_time = pygame.time.get_ticks()

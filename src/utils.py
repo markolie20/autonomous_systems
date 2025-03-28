@@ -1,4 +1,3 @@
-# --- START OF FILE utils.py ---
 import pygame
 import os
 import random
@@ -38,7 +37,6 @@ def load_card_images():
     try:
         if os.path.exists(DECK_IMAGE_PATH):
             deck_image = pygame.image.load(DECK_IMAGE_PATH).convert_alpha()
-            # Scale deck image slightly larger for better visibility if desired
             deck_image = pygame.transform.scale(deck_image, (CARD_WIDTH, CARD_HEIGHT))
         else:
             print(f"ERROR: Deck image not found at {DECK_IMAGE_PATH}")

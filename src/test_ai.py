@@ -7,8 +7,7 @@ from constants import ( SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_BET, STRAT_DEALER_M
 from blackjack_env import BlackjackEnv 
 from utils import load_card_images
 
-def simulate_ai(strategy, rounds, bet_amount): # Override the global AI strategy. import constants constants.AI_STRATEGY = strategy
-    # Create a hidden screen (required by some game functions)
+def simulate_ai(strategy, rounds, bet_amount): 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.HIDDEN)
 
     # Load game assets.
@@ -62,7 +61,7 @@ def simulate_ai(strategy, rounds, bet_amount): # Override the global AI strategy
         env.reset_round()
 
     return results
-def main(): # Initialize pygame. pygame.init() pygame.font.init() # Optionally disable delays to speed up simulation. pygame.time.wait = lambda x: None
+def main(): 
     rounds_per_strategy = 100
     bet_amount = DEFAULT_BET
 

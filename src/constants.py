@@ -11,7 +11,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 
 # Colors
 WHITE = (255, 255, 255)
-GREEN = (0, 128, 0) # Changed from (34, 139, 34) to standard green
+GREEN = (0, 128, 0) 
 BLACK = (0, 0, 0)
 
 # Card Dimensions
@@ -28,8 +28,7 @@ FONT = pygame.font.Font(None, 36)
 SMALL_FONT = pygame.font.Font(None, 24) # Added for potentially smaller text
 
 # Paths
-# IMPORTANT: Make sure this path is correct for your system
-BASE_DIR = pathlib.Path(__file__).parent.parent # Gets the directory where constants.py is located
+BASE_DIR = pathlib.Path(__file__).parent.parent 
 DATA_FOLDER = os.path.join(BASE_DIR, "data")
 CARDS_FOLDER = os.path.join(DATA_FOLDER, "cards")
 DECK_IMAGE_FILENAME = "back_of_card.png"

@@ -23,7 +23,7 @@ class BlackjackEnv:
 
         # Store the loaded images
         self.deck_image = deck_image
-        self.card_images = card_images # Store the dictionary
+        self.card_images = card_images 
 
         self.player_positions = [
             (PLAYER_CARD_START_POS[0] + i * CARD_SPACING, PLAYER_CARD_START_POS[1])
@@ -97,7 +97,7 @@ class BlackjackEnv:
             hand.append((card_value, suit))
         else:
              print(f"Warning: {'Player' if to_player else 'Dealer'} hand limit reached for display positions.")
-             hand.append((card_value, suit)) # Logic continues, just visual glitch possible
+             hand.append((card_value, suit))
 
         # print(f"Dealt {'Player' if to_player else 'Dealer'}: {card_value} of {suit}. Deck: {len(self.deck)}")
 
@@ -112,10 +112,10 @@ class BlackjackEnv:
                   pygame.time.wait(delay)
 
         for card_obj in self.player_cards:
-             card_obj.position = list(card_obj.end_pos) # Snap to final position
+             card_obj.position = list(card_obj.end_pos) 
              card_obj.is_moving = False
         for card_obj in self.dealer_cards:
-             card_obj.position = list(card_obj.end_pos) # Snap to final position
+             card_obj.position = list(card_obj.end_pos) 
              card_obj.is_moving = False
 
         player_score = calculate_hand_value(self.player_hand)
@@ -149,7 +149,7 @@ class BlackjackEnv:
         self.message = f"Player Stands. Score: {player_score}. Dealer's Turn."
         self.game_state = "DEALER_TURN"
 
-    def dealer_play(self, screen): # Pass screen for updates during dealer turn
+    def dealer_play(self, screen): 
         """Dealer plays according to house rules. Returns True if play occurred."""
         if self.game_state != "DEALER_TURN": return False
 
@@ -159,33 +159,33 @@ class BlackjackEnv:
         while dealer_score < DEALER_STAND_THRESHOLD:
             played_turn = True
             print(f"Dealer has {dealer_score}, Dealer Hits.")
-            self.message = f"Dealer Hits..." # Update message before dealing
+            self.message = f"Dealer Hits..."
 
             # Render BEFORE dealing the card
             self.render(screen)
             pygame.display.flip()
-            pygame.time.wait(700) # Pause for effect
+            pygame.time.wait(700) 
 
             self.deal_card(to_player=False)
             dealer_score = calculate_hand_value(self.dealer_hand)
-            self.message = f"Dealer has {dealer_score}" # Update message after dealing
+            self.message = f"Dealer has {dealer_score}" 
 
             # Render AFTER dealing the card
             self.render(screen)
             pygame.display.flip()
-            pygame.time.wait(700) # Pause again
+            pygame.time.wait(700) 
 
             if dealer_score > 21:
                 print(f"Dealer Busts! Score: {dealer_score}")
                 self.message = f"Dealer Busts! Score: {dealer_score}"
                 break
 
-        if not played_turn and dealer_score <= 21: # Dealer stood immediately or already busted
+        if not played_turn and dealer_score <= 21:
             print(f"Dealer Stands. Score: {dealer_score}")
             self.message = f"Dealer Stands. Score: {dealer_score}"
-            self.render(screen) # Update display with final standing message
+            self.render(screen) 
             pygame.display.flip()
-            pygame.time.wait(1000) # Show stand message
+            pygame.time.wait(1000)
 
         self.resolve_round()
         return True
@@ -233,7 +233,7 @@ class BlackjackEnv:
             result_message = "Push! (Tie)"
             payout = 0  # Bet terug
 
-        # **Update balance correct**
+        
         self.balance += payout  # Payout verwerken
         if payout == 0:  # Als er niet verloren is, zet terug
             self.balance += self.current_bet
@@ -255,7 +255,6 @@ class BlackjackEnv:
         try: return int(upcard_val)
         except ValueError: return 0
 
-    # --- REPLACE THIS ENTIRE METHOD ---
     def player_ai_action(self):
         """AI decides action for the player based on the selected strategy."""
         if self.game_state != "PLAYER_TURN":
@@ -264,8 +263,7 @@ class BlackjackEnv:
 
         player_score = calculate_hand_value(self.player_hand)
         dealer_upcard = self.get_dealer_upcard_value()
-        # Note: is_soft_hand logic is NOT included here for simplicity,
-        # these strategies primarily use the calculated total score.
+
 
         print(f"DEBUG: AI Turn - Strategy: {AI_STRATEGY}, Score: {player_score}, Dealer Up: {dealer_upcard}")
 
@@ -292,7 +290,6 @@ class BlackjackEnv:
 
         # 3. Basic Hard Hands (Simplified)
         elif AI_STRATEGY == STRAT_BASIC_HARD:
-            # Assumes hard hands (ignores soft count for simplicity here)
             if player_score >= 17:
                  print(f"AI ({STRAT_BASIC_HARD}): STAND (Hard 17+)")
                  self.player_stand()
@@ -308,11 +305,11 @@ class BlackjackEnv:
 
         # 4. Cautious (Stands earlier vs low dealer card)
         elif AI_STRATEGY == STRAT_CAUTIOUS:
-            stand_threshold = 15 # Default stand threshold
-            if 2 <= dealer_upcard <= 6: # Dealer likely to bust
-                 stand_threshold = 12 # Stand earlier, let dealer bust
-            elif dealer_upcard >= 7: # Dealer likely has good hand
-                 stand_threshold = 17 # Need a better hand, hit more
+            stand_threshold = 15 
+            if 2 <= dealer_upcard <= 6
+                 stand_threshold = 12 
+            elif dealer_upcard >= 7: 
+                 stand_threshold = 17
 
             if player_score < stand_threshold:
                  print(f"AI ({STRAT_CAUTIOUS}): HIT (<{stand_threshold} vs Dealer {dealer_upcard})")
@@ -323,8 +320,7 @@ class BlackjackEnv:
 
         # 5. Aggressive (Hits more, less fear of busting)
         elif AI_STRATEGY == STRAT_AGGRESSIVE:
-            # Example: Always hit 16 or less, regardless of dealer
-            AGGRESSIVE_THRESHOLD = 17
+            AGGRESSIVE_THRESHOLD = 19
             if player_score < AGGRESSIVE_THRESHOLD:
                  print(f"AI ({STRAT_AGGRESSIVE}): HIT (<{AGGRESSIVE_THRESHOLD})")
                  self.player_hit()
@@ -332,7 +328,6 @@ class BlackjackEnv:
                  print(f"AI ({STRAT_AGGRESSIVE}): STAND (>={AGGRESSIVE_THRESHOLD})")
                  self.player_stand()
 
-        # Default fallback if strategy name is wrong (shouldn't happen)
         else:
             print(f"AI (Unknown Strategy '{AI_STRATEGY}'): Defaulting to Dealer Mimic")
             if player_score < PLAYER_AI_STAND_THRESHOLD:
@@ -366,7 +361,7 @@ class BlackjackEnv:
                 dealer_score_str = str(dealer_score_display) + "+?"
 
         for i, card_obj in enumerate(self.dealer_cards):
-            is_hole_card = (i == 1) # Check if it's the second card dealt
+            is_hole_card = (i == 1) 
             if is_hole_card and not show_hole_card:
                  # Draw card back
                  if self.deck_image:
