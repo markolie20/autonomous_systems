@@ -61,9 +61,9 @@ class BlackjackEnv:
     def place_bet(self, amount=DEFAULT_BET):
         """Places the player's bet for the round."""
         if self.game_state != "BETTING": return False
-        if amount > self.balance:
-            self.message = f"Not enough funds! (Need €{amount})"
-            return False
+        #if amount > self.balance:
+        #    self.message = f"Not enough funds! (Need €{amount})"
+        #    return False
         if amount <= 0:
             self.message = "Bet must be positive!"
             return False
@@ -192,7 +192,7 @@ class BlackjackEnv:
 
     def resolve_round(self):
         """Determines the winner and updates balance."""
-        if self.game_state == "ROUND_OVER": return # Avoid double resolving
+        if self.game_state == "ROUND_OVER": return  # Avoid double resolving
 
         self.game_state = "ROUND_OVER"
         player_score = calculate_hand_value(self.player_hand)
@@ -202,8 +202,7 @@ class BlackjackEnv:
         dealer_bj = (dealer_score == 21 and len(self.dealer_hand) == 2)
 
         result_message = ""
-        # Payout logic: Start assuming bet is lost, add back if push/win
-        payout = -self.current_bet
+        payout = 0  # Standaard geen verandering in balans
 
         print("\n--- Round Result ---")
         print(f"Player Hand: {self.player_hand} (Score: {player_score})")
@@ -211,42 +210,41 @@ class BlackjackEnv:
 
         if player_bj and dealer_bj:
             result_message = "Push! Both have Blackjack!"
-            payout = 0 # Bet returned
+            payout = 0  # Bet returned
         elif player_bj:
             result_message = "Player Blackjack! 🎉"
-            payout = self.current_bet * 1.5 # BJ pays 3:2
+            payout = int(self.current_bet * 1.5)  # BJ betaalt 3:2
         elif dealer_bj:
             result_message = "Dealer Blackjack! 😢"
-            payout = -self.current_bet # Already set
+            payout = -self.current_bet  # Inzet kwijt
         elif player_score > 21:
             result_message = "Player Busts! Dealer wins."
-            payout = -self.current_bet # Already set
+            payout = -self.current_bet  # Inzet kwijt
         elif dealer_score > 21:
             result_message = "Dealer Busts! Player wins!"
-            payout = self.current_bet # Win even money
+            payout = self.current_bet  # Even money
         elif player_score > dealer_score:
             result_message = "Player wins!"
-            payout = self.current_bet # Win even money
+            payout = self.current_bet  # Even money
         elif dealer_score > player_score:
             result_message = "Dealer wins."
-            payout = -self.current_bet # Already set
-        else: # player_score == dealer_score
+            payout = -self.current_bet  # Inzet kwijt
+        else:  # player_score == dealer_score
             result_message = "Push! (Tie)"
-            payout = 0 # Bet returned
+            payout = 0  # Bet terug
 
-        # Update balance based on the calculated payout
-        self.balance += int(payout) # Add winnings (can be negative)
-        # Add the original bet back ONLY if it wasn't a loss (payout >= 0)
-        if payout > 0:
+        # **Update balance correct**
+        self.balance += payout  # Payout verwerken
+        if payout == 0:  # Als er niet verloren is, zet terug
             self.balance += self.current_bet
 
-
         print(result_message)
-        print(f"Bet: €{self.current_bet}, Payout: €{int(payout)}, New Balance: €{self.balance}")
+        print(f"Bet: €{self.current_bet}, Payout: €{payout}, New Balance: €{self.balance}")
         print("--------------------\n")
 
         self.message = result_message + f" | Balance: €{self.balance}"
         self.round_over_timer = pygame.time.get_ticks()
+
 
     def get_dealer_upcard_value(self):
         """Gets the numeric value of the dealer's visible card."""
