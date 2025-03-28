@@ -29,7 +29,7 @@ def game_loop():
     # Pass the loaded assets to the constructor
     game = BlackjackEnv(deck_image=deck_image, card_images=card_images, num_decks=3)
     running = True
-    player_is_ai = True # Set to False for manual play
+    player_is_ai = False # Set to False for manual play
 
     # Initial state setup
     game.reset_round()

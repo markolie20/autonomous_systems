@@ -237,7 +237,7 @@ class BlackjackEnv:
         # Update balance based on the calculated payout
         self.balance += int(payout) # Add winnings (can be negative)
         # Add the original bet back ONLY if it wasn't a loss (payout >= 0)
-        if payout >= 0:
+        if payout > 0:
             self.balance += self.current_bet
 
 
